@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Response & Clinical Trial System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <h1>Emergency Response & Clinical Trial System</h1>
+                        <p class="tagline">Coordinated disaster response with patient-trial matching technology</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <div class="header-actions-main">
+                        <button id="simulateBtn" class="btn-primary">
+                            <i class="fas fa-play"></i> Simulate Emergency
+                        </button>
+                        <button id="matchBtn" class="btn-secondary">
+                            <i class="fas fa-user-md"></i> Match Patients
+                        </button>
+                    </div>
+                    <div class="header-user">
+                        {% if username %}
+                        <span class="header-username"><i class="fas fa-user-circle"></i> {{ username }}</span>
+                        {% endif %}
+                        <a href="{{ url_for('logout') }}" class="header-logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project status badges removed per user request -->
+        </header>
+
+        <main>
+            <div class="dashboard-grid">
+                <!-- Disaster Response Panel -->
+                <div class="dashboard-card emergency-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-fire"></i> Disaster Response Coordinator</h2>
+                        <span class="card-badge">Active</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-description">Emergency management system using compressed response protocols and resource databases.</p>
+                        
+                        <div class="response-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="responseTime">4.2s</div>
+                                <div class="metric-label">Avg Response Time</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="resourcesDeployed">87%</div>
+                                <div class="metric-label">Resources Deployed</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="coordinationScore">92</div>
+                                <div class="metric-label">Coordination Score</div>
+                            </div>
+                        </div>
+                        
+                        <div class="emergency-list">
+                            <h3>Active Emergencies</h3>
+                            <div id="emergenciesContainer">
+                                <!-- Emergencies will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="resource-allocation">
+                            <h3>Resource Allocation</h3>
+                            <div class="resource-bars">
+                                <div class="resource-item">
+                                    <div class="resource-label">Medical Supplies</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="medicalBar"></div>
+                                    </div>
+                                    <div class="resource-value">78%</div>
+                                </div>
+                                <div class="resource-item">
+                                    <div class="resource-label">Personnel</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="personnelBar"></div>
+                                    </div>
+                                    <div class="resource-value">65%</div>
+                                </div>
+                                <div class="resource-item">
+                                    <div class="resource-label">Transport</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="transportBar"></div>
+                                    </div>
+                                    <div class="resource-value">82%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinical Trial Panel -->
+                <div class="dashboard-card trial-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-clipboard-check"></i> Clinical Trial Matcher</h2>
+                        <span class="card-badge">Optimized</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-description">Patient-trial matching system for clinical trials with reduced latency.</p>
+                        
+                        <div class="trial-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="matchRate">94%</div>
+                                <div class="metric-label">Match Accuracy</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="matchTime">0.8s</div>
+                                <div class="metric-label">Match Time</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="trialCount">42</div>
+                                <div class="metric-label">Active Trials</div>
+                            </div>
+                        </div>
+                        
+                        <div class="matching-interface">
+                            <h3>Patient-Trial Matching</h3>
+                            <div class="input-group">
+                                <label for="patientCondition">Patient Condition</label>
+                                <select id="patientCondition">
+                                    <option value="cancer">Cancer</option>
+                                    <option value="cardiovascular">Cardiovascular Disease</option>
+                                    <option value="neurological">Neurological Disorder</option>
+                                    <option value="respiratory">Respiratory Illness</option>
+                                    <option value="autoimmune">Autoimmune Disease</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="patientAge">Patient Age</label>
+                                <input type="range" id="patientAge" min="18" max="80" value="45">
+                                <span id="ageValue">45 years</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="patientLocation">Location</label>
+                                <select id="patientLocation">
+                                    <option value="north">North Region</option>
+                                    <option value="south">South Region</option>
+                                    <option value="east">East Region</option>
+                                    <option value="west">West Region</option>
+                                </select>
+                            </div>
+                            <button id="findTrialsBtn" class="btn-primary">
+                                <i class="fas fa-search"></i> Find Matching Trials
+                            </button>
+                        </div>
+                        
+                        <div class="trial-results">
+                            <h3>Matching Trials</h3>
+                            <div id="trialsContainer">
+                                <!-- Trial results will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="digital-twin">
+                            <h3>Patient Digital Twin</h3>
+                            <div class="twin-layout">
+                                <div class="twin-inputs">
+                                    <div class="input-group">
+                                        <label>Comorbidities</label>
+                                        <div class="twin-chips">
+                                            <label><input type="checkbox" id="twinDiabetes"> Diabetes</label>
+                                            <label><input type="checkbox" id="twinHypertension"> Hypertension</label>
+                                            <label><input type="checkbox" id="twinCardio"> Cardiac history</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="twinGenetics">Genetic risk profile</label>
+                                        <select id="twinGenetics">
+                                            <option value="low">Low risk</option>
+                                            <option value="medium">Medium risk</option>
+                                            <option value="high">High risk</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="twinVitals">Current stability</label>
+                                        <input type="range" id="twinVitals" min="0" max="100" value="70">
+                                        <span id="twinVitalsValue">70 / 100</span>
+                                    </div>
+                                    <button id="runTwinBtn" type="button" class="btn-secondary small-btn">
+                                        <i class="fas fa-heartbeat"></i> Run Risk Simulation
+                                    </button>
+                                </div>
+                                <div class="twin-results">
+                                    <div class="twin-metric">
+                                        <div class="twin-label">Survival probability</div>
+                                        <div id="twinSurvival" class="twin-value">-- %</div>
+                                    </div>
+                                    <div class="twin-metric">
+                                        <div class="twin-label">Drug response likelihood</div>
+                                        <div id="twinResponse" class="twin-value">-- %</div>
+                                    </div>
+                                    <div class="twin-metric">
+                                        <div class="twin-label">Side-effect risk</div>
+                                        <div id="twinSideEffects" class="twin-value warning">-- %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Panel -->
+                <div class="dashboard-card chart-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> System Analytics</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="chart-container">
+                            <canvas id="responseChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trialChart"></canvas>
+                        </div>
+                        <div class="data-summary">
+                            <h3>System Performance</h3>
+                            <div class="summary-item">
+                                <i class="fas fa-bolt"></i>
+                                <div>
+                                    <div class="summary-label">Response Protocol Efficiency</div>
+                                    <div class="summary-value">Increased by 34%</div>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <div class="summary-label">Matching Latency</div>
+                                    <div class="summary-value">Reduced by 68%</div>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-database"></i>
+                                <div>
+                                    <div class="summary-label">Resource Optimization</div>
+                                    <div class="summary-value">Improved by 42%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status Panel -->
+                <div class="dashboard-card status-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-server"></i> System Status</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Disaster Database</div>
+                                    <div class="status-desc">Resource allocation system</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Trial Matching Engine</div>
+                                    <div class="status-desc">Patient-trial correlation</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator warning"></div>
+                                <div class="status-info">
+                                    <div class="status-title">QA Testing System</div>
+                                    <div class="status-desc">Automated test cases</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Revenue Optimizer</div>
+                                    <div class="status-desc">User data models</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="system-controls">
+                            <h3>Project Controls</h3>
+                            <div class="controls-grid">
+                                <button class="control-btn" id="startProjectBtn">
+                                    <i class="fas fa-rocket"></i> Start Project
+                                </button>
+                                <button class="control-btn" id="trackProgressBtn">
+                                    <i class="fas fa-chart-bar"></i> Track Progress
+                                </button>
+                                <button class="control-btn" id="generateReportBtn">
+                                    <i class="fas fa-file-alt"></i> Generate Report
+                                </button>
+                                <button class="control-btn" id="simulateDataBtn">
+                                    <i class="fas fa-cogs"></i> Simulate Data
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-panel">
+                            <h3>Recent Activity</h3>
+                            <div id="notificationsContainer">
+                                <!-- Notifications will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Intelligence Panel -->
+                <div class="dashboard-card intelligence-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-satellite-dish"></i> Real-Time Intelligence</h2>
+                        <span class="card-badge">Live</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="intelligence-metrics">
+                            <div class="metric mini-metric">
+                                <div class="metric-label">Incoming alerts / min</div>
+                                <div id="alertsPerMinute" class="metric-value">0.0</div>
+                            </div>
+                            <div class="metric mini-metric">
+                                <div class="metric-label">Current density hotspot</div>
+                                <div id="densityHotspot" class="metric-value">--</div>
+                            </div>
+                            <div class="metric mini-metric">
+                                <div class="metric-label">Social distress signals</div>
+                                <div id="socialSignals" class="metric-value">0</div>
+                            </div>
+                        </div>
+                        <div class="intelligence-streams">
+                            <div class="stream-column">
+                                <h3>Live Emergency Feed</h3>
+                                <div id="liveFeedList" class="stream-list"></div>
+                            </div>
+                            <div class="stream-column">
+                                <h3>Social Signal Stream</h3>
+                                <div id="socialFeedList" class="stream-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GIS & Route Optimization Panel -->
+                <div class="dashboard-card map-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-map-marked-alt"></i> GIS & Route Optimization</h2>
+                    </div>
+                    <div class="card-content map-content">
+                        <div id="map" class="map-container"></div>
+                        <div class="route-sidebar">
+                            <h3>Active Route Plan</h3>
+                            <p id="routeSummary" class="route-summary">Waiting for emergency data...</p>
+                            <div class="route-metrics">
+                                <div class="route-metric">
+                                    <span class="route-label">ETA</span>
+                                    <span id="routeEta" class="route-value">-- min</span>
+                                </div>
+                                <div class="route-metric">
+                                    <span class="route-label">Route risk</span>
+                                    <span id="routeRisk" class="route-value">--</span>
+                                </div>
+                                <div class="route-metric">
+                                    <span class="route-label">Blocked segments</span>
+                                    <span id="routeBlocked" class="route-value">0</span>
+                                </div>
+                            </div>
+                            <p class="route-note">Routes are simulated using safe paths that avoid fire / flood zones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trial Outcome Intelligence Panel -->
+                <div class="dashboard-card trial-success-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-flask"></i> Trial Outcome Intelligence</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="trial-success-grid">
+                            <div class="trial-success-item">
+                                <div class="trial-success-label">Completion probability</div>
+                                <div id="trialCompletionProb" class="trial-success-value">-- %</div>
+                            </div>
+                            <div class="trial-success-item">
+                                <div class="trial-success-label">Dropout risk</div>
+                                <div id="trialDropoutRisk" class="trial-success-value warning">-- %</div>
+                            </div>
+                            <div class="trial-success-item">
+                                <div class="trial-success-label">Adverse reaction forecast</div>
+                                <div id="trialAdverseRisk" class="trial-success-value">-- %</div>
+                            </div>
+                        </div>
+                        <p class="trial-success-note">Values are estimated using simplified logic from current trial load, phase and patient mix to show how a real predictor could behave.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">ERCT System</div>
+                <div class="footer-info">
+                    <p>Interactive Disaster Response & Clinical Trial Matching Platform</p>
+                    <p class="footer-note">Advanced project with 1-week implementation timeline</p>
+                </div>
+                <button id="selectProjectBtn" class="btn-primary">
+                    <i class="fas fa-check-circle"></i> Select This Project
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Simple in-page assistant widget -->
+    <div class="assistant-widget">
+        <button id="assistantToggle" class="assistant-toggle">
+            <i class="fas fa-comment-dots"></i>
+            <span>Help</span>
+        </button>
+        <div id="assistantPanel" class="assistant-panel hidden">
+            <div class="assistant-header">
+                <div>
+                    <div class="assistant-title">Dashboard Assistant</div>
+                    <div class="assistant-subtitle">Ask how to use this page</div>
+                </div>
+                <i class="fas fa-robot"></i>
+            </div>
+            <div id="assistantMessages" class="assistant-messages">
+                <div class="assistant-message assistant-message-bot">
+                    Hi! I can explain how the emergencies, trials, analytics and project controls work.
+                </div>
+            </div>
+            <form id="assistantForm" class="assistant-input-area">
+                <input id="assistantInput" type="text" placeholder="Ask a question about this dashboard..." autocomplete="off" />
+                <button type="submit" class="assistant-send">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

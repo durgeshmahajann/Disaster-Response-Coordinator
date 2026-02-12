@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Response & Clinical Trial System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <h1>Emergency Response & Clinical Trial System</h1>
+                        <p class="tagline">Coordinated disaster response with patient-trial matching technology</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button id="simulateBtn" class="btn-primary">
+                        <i class="fas fa-play"></i> Simulate Emergency
+                    </button>
+                    <button id="matchBtn" class="btn-secondary">
+                        <i class="fas fa-user-md"></i> Match Patients
+                    </button>
+                </div>
+            </div>
+            
+            <div class="project-status">
+                <div class="status-badge">
+                    <span class="status-dot advanced"></span>
+                    <span class="status-label">Disaster Response Coordinator - Advanced</span>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot advanced"></span>
+                    <span class="status-label">Clinical Trial Matcher - Advanced</span>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot ready"></span>
+                    <span class="status-label">Ready for Implementation</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard-grid">
+                <!-- Disaster Response Panel -->
+                <div class="dashboard-card emergency-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-fire"></i> Disaster Response Coordinator</h2>
+                        <span class="card-badge">Active</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-description">Emergency management system using compressed response protocols and resource databases.</p>
+                        
+                        <div class="response-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="responseTime">4.2s</div>
+                                <div class="metric-label">Avg Response Time</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="resourcesDeployed">87%</div>
+                                <div class="metric-label">Resources Deployed</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="coordinationScore">92</div>
+                                <div class="metric-label">Coordination Score</div>
+                            </div>
+                        </div>
+                        
+                        <div class="emergency-list">
+                            <h3>Active Emergencies</h3>
+                            <div id="emergenciesContainer">
+                                <!-- Emergencies will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="resource-allocation">
+                            <h3>Resource Allocation</h3>
+                            <div class="resource-bars">
+                                <div class="resource-item">
+                                    <div class="resource-label">Medical Supplies</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="medicalBar"></div>
+                                    </div>
+                                    <div class="resource-value">78%</div>
+                                </div>
+                                <div class="resource-item">
+                                    <div class="resource-label">Personnel</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="personnelBar"></div>
+                                    </div>
+                                    <div class="resource-value">65%</div>
+                                </div>
+                                <div class="resource-item">
+                                    <div class="resource-label">Transport</div>
+                                    <div class="resource-bar-container">
+                                        <div class="resource-bar" id="transportBar"></div>
+                                    </div>
+                                    <div class="resource-value">82%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinical Trial Panel -->
+                <div class="dashboard-card trial-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-clipboard-check"></i> Clinical Trial Matcher</h2>
+                        <span class="card-badge">Optimized</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-description">Patient-trial matching system for clinical trials with reduced latency.</p>
+                        
+                        <div class="trial-metrics">
+                            <div class="metric">
+                                <div class="metric-value" id="matchRate">94%</div>
+                                <div class="metric-label">Match Accuracy</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="matchTime">0.8s</div>
+                                <div class="metric-label">Match Time</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value" id="trialCount">42</div>
+                                <div class="metric-label">Active Trials</div>
+                            </div>
+                        </div>
+                        
+                        <div class="matching-interface">
+                            <h3>Patient-Trial Matching</h3>
+                            <div class="input-group">
+                                <label for="patientCondition">Patient Condition</label>
+                                <select id="patientCondition">
+                                    <option value="cancer">Cancer</option>
+                                    <option value="cardiovascular">Cardiovascular Disease</option>
+                                    <option value="neurological">Neurological Disorder</option>
+                                    <option value="respiratory">Respiratory Illness</option>
+                                    <option value="autoimmune">Autoimmune Disease</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="patientAge">Patient Age</label>
+                                <input type="range" id="patientAge" min="18" max="80" value="45">
+                                <span id="ageValue">45 years</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="patientLocation">Location</label>
+                                <select id="patientLocation">
+                                    <option value="north">North Region</option>
+                                    <option value="south">South Region</option>
+                                    <option value="east">East Region</option>
+                                    <option value="west">West Region</option>
+                                </select>
+                            </div>
+                            <button id="findTrialsBtn" class="btn-primary">
+                                <i class="fas fa-search"></i> Find Matching Trials
+                            </button>
+                        </div>
+                        
+                        <div class="trial-results">
+                            <h3>Matching Trials</h3>
+                            <div id="trialsContainer">
+                                <!-- Trial results will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Panel -->
+                <div class="dashboard-card chart-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> System Analytics</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="chart-container">
+                            <canvas id="responseChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trialChart"></canvas>
+                        </div>
+                        <div class="data-summary">
+                            <h3>System Performance</h3>
+                            <div class="summary-item">
+                                <i class="fas fa-bolt"></i>
+                                <div>
+                                    <div class="summary-label">Response Protocol Efficiency</div>
+                                    <div class="summary-value">Increased by 34%</div>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <div class="summary-label">Matching Latency</div>
+                                    <div class="summary-value">Reduced by 68%</div>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-database"></i>
+                                <div>
+                                    <div class="summary-label">Resource Optimization</div>
+                                    <div class="summary-value">Improved by 42%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status Panel -->
+                <div class="dashboard-card status-panel">
+                    <div class="card-header">
+                        <h2><i class="fas fa-server"></i> System Status</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Disaster Database</div>
+                                    <div class="status-desc">Resource allocation system</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Trial Matching Engine</div>
+                                    <div class="status-desc">Patient-trial correlation</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator warning"></div>
+                                <div class="status-info">
+                                    <div class="status-title">QA Testing System</div>
+                                    <div class="status-desc">Automated test cases</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-indicator active"></div>
+                                <div class="status-info">
+                                    <div class="status-title">Revenue Optimizer</div>
+                                    <div class="status-desc">User data models</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="system-controls">
+                            <h3>Project Controls</h3>
+                            <div class="controls-grid">
+                                <button class="control-btn" id="startProjectBtn">
+                                    <i class="fas fa-rocket"></i> Start Project
+                                </button>
+                                <button class="control-btn" id="trackProgressBtn">
+                                    <i class="fas fa-chart-bar"></i> Track Progress
+                                </button>
+                                <button class="control-btn" id="generateReportBtn">
+                                    <i class="fas fa-file-alt"></i> Generate Report
+                                </button>
+                                <button class="control-btn" id="simulateDataBtn">
+                                    <i class="fas fa-cogs"></i> Simulate Data
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-panel">
+                            <h3>Recent Activity</h3>
+                            <div id="notificationsContainer">
+                                <!-- Notifications will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">ERCT System</div>
+                <div class="footer-info">
+                    <p>Interactive Disaster Response & Clinical Trial Matching Platform</p>
+                    <p class="footer-note">Advanced project with 1-week implementation timeline</p>
+                </div>
+                <button id="selectProjectBtn" class="btn-primary">
+                    <i class="fas fa-check-circle"></i> Select This Project
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

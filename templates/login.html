@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Emergency Response Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                    <h1 class="auth-title">Emergency Response System</h1>
+                    <p class="auth-subtitle">Sign in to access your dashboard</p>
+                </div>
+            </div>
+
+            {% if error %}
+            <div class="auth-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="post" action="{{ url_for('login') }}" class="auth-form">
+                <div class="auth-field">
+                    <label for="username">Username</label>
+                    <div class="auth-input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Enter username" required>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label for="password">Password</label>
+                    <div class="auth-input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary auth-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <p class="auth-hint">Demo credentials: <strong>admin</strong> / <strong>password</strong></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
